@@ -1,0 +1,309 @@
+/* -------------------------------- 
+
+Primary style
+
+-------------------------------- */
+html * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 100%;
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 1em;
+  color: rgb(10,10,10);
+  background-color: rgba(247,250,248,1);
+}
+
+#debug{
+    height: 100px;
+    z-index:2;
+    position: fixed;
+    bottom: 10px;
+    left: 20px;
+    color:rgb(100,100,100);
+}
+
+@font-face {
+font-family: 'Samarkan Normal';
+font-style: normal;
+font-weight: normal;
+src: local('Samarkan Normal'), url('SAMARN__.woff') format('woff');
+}
+
+
+body, html {
+  height: 100%;
+}
+
+a {
+  color: #3e3947;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+.fr{
+  font-family: 'Rochester', cursive;
+  font-size:1em;
+}
+
+.uk{
+  font-family: 'Droid Serif', serif;
+  font-size: 1em;
+
+}
+
+.us{
+  font-family: 'Helvetica',sans-serif;
+  font-size: 1em;
+}
+
+
+.ind{
+  font-family:'Samarkan Normal';
+  font-weight:normal;
+  font-size:1em;
+}
+
+hr{
+  display: block;
+  width:50px;
+  margin:auto;
+}
+/* -------------------------------- 
+
+Modules - reusable parts of our design
+
+-------------------------------- */
+/*.cd-img-replace {
+  /* replace text with a background-image */
+  /*display: inline-block;
+  overflow: hidden;
+  text-indent: 100%;
+  white-space: nowrap;
+}*/
+
+/* -------------------------------- 
+
+Main components 
+
+-------------------------------- */
+#mapmoircover{
+  width:80%;
+  height:30px;
+  text-align: center;
+  margin:50% auto;
+  line-height: 4em;
+}
+
+#mapmoircover p{
+ font-size: 1em;
+ text-align: center;
+ margin: auto;
+}
+
+.cd-section {
+  min-height: 100%;
+  overflow: scroll-y;
+  position: relative;
+  padding: 2em 0;
+}
+
+#countdown{
+  width:80%;
+  margin:auto;
+}
+/*.cd-section:nth-of-type(odd) {
+  background-color: #3e3947;
+}
+.cd-section:nth-of-type(odd) p {
+  color: #898099;
+}
+.cd-section:nth-of-type(even) {
+  background-color: #745360;
+}
+.cd-section:nth-of-type(even) p {
+  color: #bda3ad;
+}*/
+.cd-section h1, .cd-section p {
+  /*position: absolute;
+  left: 50%;
+  top: 50%;
+  bottom: auto;
+  right: auto;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -o-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);*/
+  width: 100%;
+  max-width: 900px;
+  margin:auto;
+  padding:1em;
+
+}
+
+
+.cd-section h1 {
+  color:black;
+  font-weight: 300;
+  text-transform: uppercase;
+  text-align: center;
+  /*font-size: 20px;*/
+  font-size: 2rem;
+  line-height: 0;
+}
+
+.cd-section h2 {
+  color:#A35140;
+  font-weight: 700;
+  /*text-transform: lowercase;*/
+  text-align: center;
+  /*font-size: 20px;*/
+  font-size: 1rem;
+  padding-bottom: 20px;
+  
+}
+
+.cd-section p {
+  /*line-height: 1.6;*/
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+
+@media only screen and (min-width: 768px) {
+  .cd-section h1 {
+    /*font-size: 30px;*/
+    font-size: 1.875rem;
+  }
+  .cd-section p {
+    /*font-size: 20px;*/
+    font-size: 1.25rem;
+    line-height: 1.8;
+  }
+}
+
+.cd-scroll-down {
+  position: absolute;
+  /*left: 50%;*/
+  right: auto;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+/*  bottom: 20px;
+  width: 38px;
+  height: 44px;*/
+  overflow: scroll-y;
+  /*background: url("../img/cd-arrow-bottom.svg") no-repeat center center;*/
+}
+
+/* No Touch devices */
+.cd-nav-trigger {
+  display: none;
+}
+
+.no-touch #cd-vertical-nav {
+  position: fixed;
+  left: 43%;
+  top: 50%;
+  bottom: auto;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.no-touch #cd-vertical-nav li {
+  text-align: right;
+}
+.no-touch #cd-vertical-nav a {
+  display: inline-block; 
+  /* prevent weird movements on hover when you use a CSS3 transformation - webkit browsers */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.no-touch #cd-vertical-nav a:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.no-touch #cd-vertical-nav a span {
+  float: right;
+  display: inline-block;
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+}
+.no-touch #cd-vertical-nav a:hover span {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+
+}
+.no-touch #cd-vertical-nav a:hover .cd-label {
+  opacity: 1;
+
+}
+.no-touch #cd-vertical-nav a.is-selected .cd-dot {
+  background-color: #A35140;
+}
+.no-touch #cd-vertical-nav .cd-dot {
+  position: relative;
+  /* we set a top value in order to align the dot with the label. If you change label's font, you may need to change this top value*/
+  top: 14px;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background-color: #F48A7A; 
+  -webkit-transition: -webkit-transform 0.2s, background-color 0.5s;
+  -moz-transition: -moz-transform 0.2s, background-color 0.5s;
+  transition: transform 0.2s, background-color 0.5s;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+.no-touch #cd-vertical-nav .cd-label {
+  position:relative;
+  margin-right: 5px;
+  padding: 1.5em 1em; /*SPACING BETWEEN DOTS*/
+  color: #A35140;
+  font-size:12px;
+  font-weight: bold;
+  -webkit-transition: -webkit-transform 0.2s, opacity 0.2s;
+  -moz-transition: -moz-transform 0.2s, opacity 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0;
+  -webkit-transform-origin: 100% 50%;
+  -moz-transform-origin: 100% 50%;
+  -ms-transform-origin: 100% 50%;
+  -o-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+}
+
+footer{
+  margin: auto;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.8em;
+}
+
