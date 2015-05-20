@@ -2,14 +2,13 @@
 <html>
 <head>
 <meta charset=utf-8 />
-<title>Final Mapmoir</title>
+<title>Mapmoir Demo</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Rochester' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
-
 <!-- for text stylesheets -->
   <link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
   <link rel="stylesheet" href="css/style2.css"> <!-- Resource style -->
@@ -118,10 +117,17 @@
 <style>
   body { margin:0; padding:0; }
   #map { position:absolute; top:0; bottom:0; right:0px; left:50%; width:50%; z-index: 1; }
- 
+  /*#tracks,#beat,#finale
+    {
+      height: 1400px;
+      width: 100%;
+      background-color: #F66;
+      border-radius: 10px;
+    }
+    #beat { background-color: #66F; }
+    #finale { background-color: #6F6; }*/
 </style>
 </head>
-
 <body>
 <!-- MAP&CONTENT BASIC CSS -->
 <style>
@@ -133,6 +139,9 @@ article {
   left:0;
   overflow:auto;
   }
+/*.quiet {
+  color:rgba(0,0,0,0.5);
+  }*/
 .scroll {
   display:block;
   text-align:center;
@@ -161,7 +170,9 @@ section.active {
   <audio loop class="set2" id="sound02" src="assets/01BhojpuriBoys.mp3"></audio>
   <audio loop class="set2" id="sound03" src="assets/02EkLadkiKoDekhaTo.mp3"></audio>
   <audio id="sound04" src="assets/03SoneRoSurajUgyoJiMhare.mp3"></audio>
-
+<!--   <div id="tracks"></div>
+  <div id="beat"></div>
+  <div id="finale"></div> -->
   <div class='sections prose'>
 <!-- DOT NAVIGATION -->
     <nav id="cd-vertical-nav">
@@ -408,7 +419,7 @@ Sometimes they would accusingly exclaim, “This is not BTM Layout, this is <spa
         <img src="assets/countdown.gif"> <br>
       </div>
     </section>
-    <footer>2015.<br> Authored by Becky Band Jain. Developed by Josephine Rahadi. Designed by the both of us.</footer>
+    <footer>2015.<br><br>Authored by Becky Band Jain. Developed by Josephine Rahadi. Designed by the both of us.</footer>
   </div>
   <!-- <footer id="debug"></footer> -->
 </article>
