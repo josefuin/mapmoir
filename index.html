@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Final Mapmoir</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Rochester' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+
+<!-- for text stylesheets -->
+  <link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+  <link rel="stylesheet" href="css/style2.css"> <!-- Resource style -->
+  <script src="js/modernizr.js"></script> <!-- Modernizr -->
+    <script struck="js/jquery-2.1.1.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+  var events=["abort","canplay","canplaythrough","durationchange","emptied","ended",
+      "error","loadeddata","loadedmetadata","loadstart","pause","play","playing",
+      "progress","ratechange","readystatechange","seeked","seeking","stalled",
+      "suspend","timeupdate","volumechange","waiting"]
+  // The Plugin.
+  $.fn.scrollPlay=function(O){
+    return this.each(function(){
+      var audio=this
+      audio.volume=0
+      audio.play() // iPhone does not allow play without a click, nor can you change the volume!
+      $(window).on('scroll scroll-music',function(){
+        var st=$(window).scrollTop(),
+          isLoud=$(audio).is('.loud')
+          loud=st>=O.top && st< O.bottom,
+          isIgnored=$(audio).is('.ignored')
+        if (isIgnored){
+          if(audio.volume!=0){
+            $(audio).trigger("scroll-before-off").stop().animate({volume:0},O.duration,function(){
+                $(audio).trigger("scroll-off")
+            })
+          }
+        }else if (isLoud !==loud){
+          if (isLoud){
+            $(audio).trigger("scroll-before-off").stop().animate({volume:0},O.duration,function(){
+              $(audio).trigger("scroll-off")
+            })
+          }else{
+            $(audio).trigger("scroll-before-on").stop().animate({volume:1},O.duration,function(){
+              $(audio).trigger("scroll-on")
+            })
+          }
+          $(audio).toggleClass('loud',loud)
+        }
+      }).trigger('scroll-music')
+    })
+  }
+  // a sample way to call it.
+  $(function(){
+    var set=localStorage.musicSet
+
+    if (set)
+      $('.set1,.set2').not('.'+set).addClass('ignored')
+    else
+      $('.set2').addClass('ignored')
+    $('.switch').click(function(){
+      var set=this.id
+      localStorage.musicSet=set
+      $('.set1,.set2').addClass('ignored').removeClass('loud').filter('.'+set).removeClass('ignored')
+      $(window).trigger('scroll-music')
+    })
+    
+    $('#sound01').scrollPlay({
+      top:0,
+      bottom:20,
+      // duration:2000
+    })
+
+    $('#sound02').scrollPlay({
+      top:650,
+      bottom:7255,
+      // duration:2000
+    })
+    $('#sound03').scrollPlay({
+      top:7255,
+      bottom:12565,
+      // duration:2000
+    })
+    $(window).scroll(function(){
+      var top=$(window).scrollTop(),
+        currentDiv=0,
+        active=false
+      if (top<0) return
+      $('.float').parent().each(function(i){
+        var float=$(this).find('.float'),
+          dTop = $(this).offset().top,
+          dHeight=$(this).outerHeight(),
+          bHeight=float.outerHeight(),
+          dBottom = dTop + dHeight,
+          current = dTop <= top && dBottom >= top
+        if(current) {
+          active=current&& top-dTop<dHeight-bHeight
+          currentDiv=i
+          if(active){
+            float.css({top:top-dTop})
+          }
+          return false
+        }
+      })
+      $('.float').each(function(i){
+        if(i<currentDiv || (i==currentDiv && !active)) 
+          $(this).css({top:$(this).parent().outerHeight()-$(this).outerHeight()})
+        else if(i>currentDiv)
+          $(this).css({top:0})
+      })
+    }).trigger('scroll')
+  })
+</script>
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; right:0px; left:50%; width:50%; z-index: 1; }
+ 
+</style>
+</head>
+
+<body>
+<!-- MAP&CONTENT BASIC CSS -->
+<style>
+article {
+  position:fixed;
+  top:0;
+  right:0;
+  bottom:0px;
+  left:0;
+  overflow:auto;
+  }
+.scroll {
+  display:block;
+  text-align:center;
+  }
+.sections {
+  background:rgba(252,250,241,0.8);
+  width:50%;
+
+  }
+section {
+  padding:50px 100px;
+  color:rgba(0,0,0,1);
+  -webkit-transition:background 500ms, color 500ms;
+          transition:background 500ms, color 500ms;
+  }
+section.active {
+  background:rgba(252,250,241,1);
+  color:rgba(0,0,0,1);
+  }
+</style>
+<div id='map'></div>
+
+<article id='narrative'>
+<!-- audio --> 
+  <audio loop class="set2" id="sound01" src="assets/05Maangalyam Acoustic Version by Shaheer - Bangalore Days.mp3"></audio>
+  <audio loop class="set2" id="sound02" src="assets/01BhojpuriBoys.mp3"></audio>
+  <audio loop class="set2" id="sound03" src="assets/02EkLadkiKoDekhaTo.mp3"></audio>
+  <audio id="sound04" src="assets/03SoneRoSurajUgyoJiMhare.mp3"></audio>
+
+  <div class='sections prose'>
+<!-- DOT NAVIGATION -->
+    <nav id="cd-vertical-nav">
+    <ul>
+      <li>
+        <a href="#section1" data-number="1">
+          <span class="cd-dot"></span>
+          <span class="cd-label">1</span>
+        </a>
+      </li>
+      <li>
+        <a href="#section2" data-number="2">
+          <span class="cd-dot"></span>
+          <span class="cd-label">2</span>
+        </a>
+      </li>
+      <li>
+        <a href="#section3" data-number="3">
+          <span class="cd-dot"></span>
+          <span class="cd-label">3</span>
+        </a>
+      </li>
+      <li>
+        <a href="#section4" data-number="4">
+          <span class="cd-dot"></span>
+          <span class="cd-label">4</span>
+        </a>
+      </li>
+      <li>
+        <a href="#section5" data-number="5">
+          <span class="cd-dot"></span>
+          <span class="cd-label">5</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- <a class="cd-nav-trigger cd-img-replace">Open navigation<span></span></a> -->
+    
+    <section id='cover' class='cover active'>
+      <div id="mapmoircover"> 
+        <img src="assets/logo-mapmoir.png"> 
+      <p>Becky Band Jain & Josephine Rahadi</p><hr></div>
+    </section>
+
+  <!-- TEXT  -->
+    <section id='valence'> 
+      <div id="section1" class="cd-section">
+      <h1>Chapter 1</h1>
+      <h2> Valence, France</h2>
+    
+    <p>At ease in the almost-tropical summer atmosphere, I was surprised to see that many of the guests at the party were <span class="ind">South Asian</span>; this small town in the south of <span class="fr">France</span> struck me as an unlikely spot for such a community. Sipping my anise-flavored cocktail, I glanced at two young men who seemed to be the only ones my age. I recognized that one of them had stood in front of me in line at the local cinema. His name was <span class="ind">Kiran</span>, and he’d brought a friend along who was studying in <span class="fr">Grenoble</span> with him, an hour away. <br></p>
+    <p>"My name is <span class="ind">Salil Zen</span>," I heard him say. <br></p>
+
+<p>"Oh, you're Zen?" I asked, startled but trying to seem knowledgeable. "I've read some books about Zen Buddhism, like..."<br>
+
+<p>He laughed and attempted again. "No, <span class="ind">Jain</span>." I still heard a twinge of "z". "It's also a religion. Basically we believe in nonviolence and we're strict vezetarians."<br>
+
+<p>"Oh, right," I replied, pretending I'd heard of it. "I'm also kind of vegetarian; it's much healthier. My mom is a doctor and had breast cancer, so I'm pretty diet conscious. But today, I couldn’t resist the grilled chicken <span class="ind">tikka masala</span>,” I said, pointing to the paper plate in my other hand and trying not to tip over all the food I’d piled on. “How long have you been in <span class="fr">Grenoble</span>? I lived there two years ago. It was really fun! I wanted to live there again this year but my teaching program placed me here, in <span class="fr">Valence</span>, instead. It’s such a small town in comparison.” <br>
+
+<p>“I just finished one year of a Master’s in robotics and I will stay another year before applying to PhD programs in <span class="us"> US</span> and <span class="uk">UK</span>,” he said.<br>
+
+<p>We’d both decided on a whim to come to the party, invited by our friends at the last minute. After a while, we all migrated to a nearby park for a game of the beloved <span class="fr">pétanque</span>, the region’s popular version of bocce. I saw myself as too sophisticated for games, and instead explored the park with a couple of others. We sat down in a circle when I got a call from my mother. <br>
+
+<p>Although I was annoyed at the interruption, I answered the phone and walked a considerable distance across the field. We had to discuss the details of my upcoming visit with her in <span class="uk">London</span>, where she’d been ever since I’d left for college at seventeen, after the cancer was cleared and she could live out her mid-life crisis under the assumption that her two almost-adult daughters no longer needed her. In addition to the mastectomy, it was as if she’d cut us off too. <br>
+
+<p>After a brief exchange, I hung up the phone and needed some time to myself. Speaking to her always seemed to fluster me, my dormant anger at her for living <span class="uk">so far away</span> often surfacing at the slightest provocation. I had no other way to express the pain I felt at her departure from my life, leaving me without much of a mother or a home base. <br>
+
+<p>I perched upon a railing and looked out over the man-made lake. As I sat there, content in my solitude and silent relief, I quickly glanced back at the group. Salil was approaching, his dark hair a contrast against the bright green of the grass. The full effect of his velcro sports sandals and comic book t-shirt struck me as rather amusing, and I mustered a smile despite myself.<br>
+
+<p>"Oh no! Why is he coming here?" I thought, dreading another awkward conversation. I longed for more of a break to collect myself. <br>
+
+<p>"Hi," he said sweetly. "Do you mind if I join you?"<br>
+
+<p>"No, it's ok," I said, lying to be polite.<br>
+
+<p>"I thought maybe something was wrong. Is everything ok?" he said. <br>
+
+<p>"I guess. Where did everyone go?" I hinted for him to join them.<br>
+
+<p>"They went to join in the <span class="fr">pétanque</span> tournament. Don't you want to come?" he said, his wide smile making his cherubic cheeks even bigger.<br>
+
+<p>I grudgingly agreed to get up, but instead of joining them we found another spot of grass to sit on. He patiently listened to the summary of my year in <span class="fr">France</span>: after graduating college, I taught <span class="uk">English</span> for twelve hours a week to low-income primary school children in a quaint rural area forty minutes from where we were.  While I hadn’t been a very good teacher and lacked patience, by the spring I decided to try and stay, deferring my graduate studies. I had found two part-time private school teaching positions for the following year. <br>
+
+<p>Besides being passionate about <span class="fr">French culture—food, nonchalance, and passion itself—</span>I wanted to pursue my love of dance. <br>
+
+<p>I had found a local studio that had become like a second home, and went there nearly every day. I was even the star of their annual show which featured dancing on stage in a red unitard, pointe shoes and my signature pigtails; doing splits and cracking jokes in French about the <span class="fr">fromage</span>; and a G-rated hip-hop strip tease. Despite whatever was troubling me when I entered the studio, I felt free when I moved, as if I’d literally shaken off my burdens. I wanted to continue to lead a creative lifestyle, the only obstacle being that I needed a new visa.<br>
+
+<p>I told <span class="ind">Salil</span> about how I was going to pursue my budding dance career in <span class="fr">France</span> and study in <span class="uk">London</span> the following year; how I'd tackled challenging subjects, like economics and philosophy, while still partying all the time at university. Yet I felt a twinge of self-consciousness that perhaps I might be revealing too much; I became aware of my privileged background and began to feel crass and irresponsible. While I spoke, he listened intently with his eyes focused on mine except when looking down at the blade of grass he was twiddling. I got the impression he didn’t engage in excessive behavior, yet he didn’t seem judgmental about my own. He attempted to describe his Master's work and his undergraduate engineering studies in <span class="ind">India</span>, but I didn't understand many of the technical details through his thick <span class="ind">Indian accent</span>. He was confident about his scholarly achievements, yet humble. He struck me as utterly mellow, without any of the pretensions or wild personality traits my <span class="us">American</span> friends seemed to have.<br>
+
+<p>We got up to find our friends and watch the rest of the game. It was close to evening, and the sky was the color of pink champagne. We walked back to the house as a group, laughing and joking about everyone's throwing techniques. Suddenly we were back in front of the house and it was time to part ways.<br>
+
+<p>"It was great meeting you," I admitted. "Here, take my email and let’s keep in touch." 
+
+<p>He accepted the slip of paper with my barely legible scribble as if it were a hundred dollar bill. I was still using my “.edu” address even though I’d graduated over a year ago.<br>
+
+<p>"Yeah, hope to see you soon," he said, his smile slackening.<br>
+
+<p>I turned and walked to the red compact car where my friends were already waiting. It was the first of many goodbyes to <span class="ind">Salil</span>, where visas would become the unseen barrier between us. <br>
+
+<p>He was a glimpse into a new, unknown world, one that was somehow simpler and saintly compared to my own: a world into which I would soon want to immigrate.</p><br><hr>
+  </div>
+    </section>
+
+
+    <section id='brooklyn'> 
+      <div id="section2" class="cd-section">
+      <h1>Chapter 2</h1>
+      <h2> New York, USA</h2>
+    <p>My eyes jolted open and my body shook awake by the thought, “Did I really just agree to get married?” The afternoon before, as I was leaving the office, Salil called me on my desk phone. Warmth rushed through my body as I listened to his sweet voice, so untainted by any previous heartbreak. I trusted this voice, even if at times I could not understand his accent. He recited a poem, the name of which neither of us can remember now. We were rushed, unsentimental. We wanted to be together, now. The long term, well, that was not something I was adept at seeing. For the next year at least, I knew I would be studying in London, and that he could be there with me on my visa. We had that much of a plan.<br>
+
+<p>In the weeks prior, I had been arranging to visit him in <span class="ind">India</span>. Discussing travel logistics, I stood on the curb in front of my apartment building, the gentle spring air luring me into an adventure.<br>
+
+<p>“My brother is engaged, and would be getting married this summer. It would be nice for you to come, although we would not be able to stay together,” he said.<br>
+
+<p>“Have you told your family about me?” I asked.<br>
+
+<p>“Yes, my mother keeps asking if we are going to get married.”<br>
+
+<p>“Does she know I have already stayed in your room in France?”<br>
+
+<p>“Yes, I told her you visited in April. I did not share many details. It would be much different in India. We cannot stay together if we are not married.”<br>
+
+<p>I smiled. “So, why don’t we get married?” I threw it out casually, waiting for the words to land.<br>
+
+<p>“It might be easier,” he replied. My words had taken us off to uncharted territory.<br>
+
+<hr>
+
+<p>In alarm, Sarah drove up to see me. I had gotten my Indian tourist visa that day. <br>
+
+<p>“I really don’t think this is a good idea,” she said. “Things are much different in India.” She had visited herself for the first time, in February. <br>
+
+<p>“This feels right,” I said. Of course it sounded cliché, but how could I possibly explain this to her?<br>
+
+<p>“You hardly know each other.”<br>
+
+<p>“We are quite close. We have been emailing and speaking a lot recently. He is really very kind.”<br>
+
+<p>“He hasn’t seen all your sides. Does he know about your moods?”<br>
+
+<p>“I don’t know. I guess he’d be willing to tolerate them.”<br>
+
+<p>I lost interest in attempting to convince her. She was justified in her concern, and in seeking to shield me, yet I was beyond the point of protection. I was hurtling down this path, of both destruction and redemption. <br>
+
+<p>We may have been more alike than either of us realized, both striving to become women in whatever way we knew, in our mother’s absence. Sarah herself had gotten engaged at a young age, yet she did not go through with the wedding. I found her boyfriend cruel in his jokes about me and a negative presence to be around, even though I never said as much. She was usually with him when she visited, and I resented not having a moment to speak one-on-one. <br>
+
+<p>“I’m very concerned. I hope you know what you’re doing,” she said.<br>
+
+<p>“I will be all right.”<br>
+
+<p>Momentum picked up, when in May the person whose studio I had been subletting suddenly decided she would be returning early June, one month before we had previously agreed. I hurriedly booked my tickets: first to London, where I would leave all of my belongings with my mother; then to Grenoble, for one month; finally, I would take the same flight to India that Salil was already on. I gave my notice at work, thrilled to be moving on.<br>
+
+<p>I must have told some friends, though it is difficult to recall. They must have told me what I was doing was daring. If they thought I was crazy, they may not have cared enough to say so to my face, or they had given up bothering long before. This new event was only the latest in my string of self-inflicted dramas. I was not a consistent friend, appearing and disappearing according to my various crises. We had already grown apart. While I had embarked on my journey to France, others remained together in their cliques. To me, familiarity was akin to suffocation.<br>
+
+<p>I despised being in New York, and the United States. Despised my hour-long subway rides in subterranean hell. Despised American politics and the wars we had started. Despised materialism. Despised my disintegrated family, or what was left of it. I did not know if I believed in ‘soul mates’; by calling me his, Salil seemed like he could be one. 
+The night before leaving New York, I met someone for a drink and got home late. I had not finished my packing, but did not think I had many belongings. I would certainly not be storing anything at my grandparents’ house, and would bring everything with me.<br>
+
+<p>I woke up early the next morning, and spent a couple of hours of manic packing. It soon became apparent that I had grossly underestimated the scale of the task. I called to inquire about shipping it; too expensive, and complicated. I would leave some things behind, and take the all rest. I had purchased what I referred to as an ‘immigrant bag,’ a black behemoth that I could probably live in comfortably.   I inched the zipper closed while pushing the last items down, and the taxi driver barely managed to get the body bag into the trunk. Once I was told I was over the weight limit, I began throwing things away in a nearby trash bin. The boarding time came close, and the airline staff took pity on me. They waived the limit and took my bags. I left the US for what would become six years.</p> <br><hr>
+  </div>
+    </section>
+
+    <section id='jaipur'>
+      <div id="section3" class="cd-section">
+      <h1>Chapter 3</h1>
+      <h2> Jaipur, India</h2>
+      <p>I was escorted to the front door, where Salil was waiting in his suit and red turban. He’d also been given a <span class="ind">bindi</span> and eyeliner on his lower lashes, and a jewel necklace and gold rings borrowed his uncle. He was almost unrecognizable, yet the grandiosity made him look regal, like the prince he joked to his friends about.
+
+<p>“Wow, you look so beautiful,” he said over the noise of his relatives’ singing and clapping, standing all around us.
+
+<p>“Thanks, and you are very handsome too. Looks like this is really happening.”
+
+<p>We placed thick, long garlands of flowers over each other’s heads and walked towards the canopy, which his cousins had decorated with strings of marigolds. As the <span class="ind">pandit</span> recited in Sanskrit, we were directed to sit on rugs behind a fire with some of the family seated on chairs looking down on us, and many of them remaining in the other room. There wasn’t enough space for everyone to watch, nor did it seem they were all that interested. Even those seated around us were murmuring louder than the pandit. After having attended so many weddings, perhaps they no longer found them engaging. Surely they had grown tired of seeing the same lengthy rituals over and over. At least ours was happening during waking hours; some Hindu weddings take place in the middle of the night, said to be auspicious for their particular astrological details.
+
+<p>I watched with amusement as Salil was instructed to flick water in his mouth and perform other rituals. I was told to do some of these myself, and could not conceal my grin as I was instructed to hold Salil’s hand, squeezing in glee at the now strangely earned right. Rice had its own starring role in the rituals, and my palms were so stubbornly covered in it as it stuck to my henna stickers that I became fixated on picking the whole lot off. I touched my toes to a line of rice outstretched before me, pointing them in the way I’d learned in ballet without the exuberance I normally felt while dancing. 
+
+<p>There was much tying of things, the symbolism of which was lost on me as heat and heaviness sapped my focus: tying a string around each of our wrists, tying my veil to Salil’s scarf, tying a sparkly headpiece to my head over the veil.
+
+<p>The July warmth was compounded by the fire’s flames. Buried under so many layers of scratchy synthetic fabric, I began to feel suffocated. I was wilting under the weight of the jewelry. When my feet started falling asleep, the circulation having been cut off by my anklets, I tried shifting my knees to the side, at which point I was promptly admonished by another aunt behind me. “Bride must not sit like that,” she said. When my nose ring got dislodged from its delicately balanced perch, she nudged me to put it back in place.
+
+<p>At one point, a pair of Salil’s relatives joined us in the ceremony to stand in for my parents. I was not aware at the time that many adaptations would have had to be made to the ceremonies according to our circumstances. I believed myself to be an individual making a choice of my own will, but custom dictated that I be given away by someone. This later posed a problem for the marriage certificate, which, after a long wait in a dreary office, needed to be falsified with a bribe.
+
+<p>I still gripped Salil’s hand as we circled the fire, a maidservant shielding it from my skirt, which I clutched with my other hand. My garland slipped off my shoulder. Finally we had completed the last rite and were officially married. Relatives showered us in petals as we shuffled around the house. The spectacle now over, we were free to step away. </p> <br><hr>
+    </div>
+    </section>
+
+    <section id='london'>
+      <div id="section4" class="cd-section">
+      <h1>Chapter 4</h1>
+      <h2> London, UK</h2>
+      <p>I arrived in <span class="uk">London</span> on August 11, 2005, armed with my student visa with a photo of me captured earlier that year, a time when I still had two large, glinting piercings in my right ear and red and blond remnants of a Dutch dye job. The immigration control officer’s thick, hairy finger pointed out that my student visa was only valid starting from the August 19th, and I would need to leave and re-enter the country after that date. In his gruff voice, he further inquired into my financial situation, which served to remind me, also as stated on the visa, that I had ‘No recourse to public funds.’ Mom was waiting outside the gate with an eager, concerned expression. I was now her married daughter, seeing her for the first time since eloping, yet a moment which might otherwise have been charged with emotion was so insignificant as to be erased from my memory. 
+      <p>In search of visa validation, a couple weeks later, my step-father Alan drove me and Mom to northern <span class="fr">France</span> for a day-trip. It was a clear summer day, and the crisp blue of the sky and the green of the fields appeared surreal. We passed the white cliffs of Dover, chalky and majestic, and then we entered the tunnel beneath the Channel. Although I was twenty-three, I felt like an adolescent on a mandatory outing with her parents, tolerating them only enough to get done what I needed to.. During our outdoor lunch on a steep cobbled street, I murmured only a few sentences. It was as if we were strangers; I hadn't seen or spoken to Mom much since she moved to the <span class="uk">UK</span>. On the return trip, we made sure to get my visa stamped, even though it wasn’t customary for travelers within the EU, for whom borders were more fluid. 
+      <p>Back in <span class="uk">London</span>, I began the application process for Salil’s visa, since he would be considered my “dependent.” The application seemed straightforward enough, but for me, completing any kind of paperwork was always an almost tear-inducing trial. Still, I was confident in my knowledge of the rules pertaining to our situation, and that he would join me in London in December, following <span class="ind">Sameer’s</span> wedding.
+       <p> Mom was a physician at a hospital in <span class="uk">Essex</span>, on the outskirts of the city, and had decided to rent a flat there on realizing the three-hour commute from Alan’s home in <span class="uk">Bricket Wood</span> was impossible. Her apartment, Flat 7, <span class="uk">Chipping Lodge</span>, was cramped for two but cozy; despite its old fashioned name, it was a new building with a working lift (most of the time) and an in-kitchen washing machine that we adored. I had a tiny room, not much bigger than my foldout double bed; a plastic set of drawers and an open rack to hang clothing sat in the corners. Alan stayed at his house on the other side of town, about an hour’s drive, and came to visit most weekends, ostensibly so Mom could cook for him. It seemed strange that she left the US to marry Alan, yet they lived apart. Although they seemed to have a modern type of arrangement during the week, leading their separate lives, she fussed over his meals like roasting a chicken for his sole consumption in a way that she didn’t bother with me. I’d lost her to him, and to London. She was the one person in the world whom I trusted, and she left.
+
+<hr>
+
+<p>Given all the advances in technology over the past decade, it seems laughable now how difficult it was for Salil and me to communicate with each other over the 4200 mile distance. Mom had agreed to sign up for the Internet at home, but until it got set up, I had to use the computers at the local library. Once was installed weeks later, the speed was no faster than dial-up. At school, I received a free starter pack from a new company called Skype whose office was nearby, but my laptop hand-me-down from Sarah was too slow to handle it. Salil and I chatted on MSN Messenger, but I got impatient waiting for his responses, since he was both a slow typist, and usually trying to work at the same time. I bought phone cards from the local shops, which usually resulted in my feeling pressured at having to squeeze as much conversation as possible as minutes and cents added up like a cash register going haywire. While written communication was more straightforward in terms of comprehension, speaking to each other actually raised more questions.
+  <p>“I wish I had a bike,” I said. “We live pretty far from the train station.”
+      <p>“My brother recently got his first one,” he said.
+      <p>“His first? Isn’t he a bit old?”
+      <p>“Well no, they’re quite expensive. And since they go so fast, usually it’s better if you wait till you’re older.”
+      <p>“Fast? What do you mean?”
+      <p>“His bike has a really powerful motor.”
+      “But bikes don’t have motors. What do you mean? I’m talking about a bike, you know, a bicycle?”
+      <p>“Oh, I see. I was talking about a motorbike, that’s what we call bike.”
+      <p>“But that’s a motorcycle!” In most conversations, something small got in the way of us having a satisfying exchange. I was so self-righteous, I couldn’t accept that Indians had a different way of speaking English. He couldn’t understand my accent, especially if I spoke quickly, and I had trouble understanding his as well, but we had entirely different ways of reacting to certain situations. The experience during our courtship was similar, but I was buoyed along by hope and the thrill of possibility. Now, everything felt so fraught because the phone was our main mode of interaction for the foreseeable future. I loved Salil, but my impatience made me intolerant in a way that now makes me cringe. </p><br><hr>
+    </div>
+    </section>
+
+    <section id='bangalore'>
+      <div id="section5" class="cd-section">
+      <h1>Chapter 5</h1>
+      <h2> Bangalore, India</h2>
+      <p>The van took us through a canopy of thick, lush palm trees and the winding, narrow lanes of an outer suburb of <span class="ind">Bangalore</span>. It was dawn and the shops were beginning to open, displaying their hanging packets of products draped along like thick, shiny ribbons, their stacked plastic buckets and straw brooms. Salil had his arm around me and a wide grin on his face as we bounced along the bumpy, barely paved roads, and I tried to mimic his joy through the fog of my exhaustion and apprehension. My husband suddenly felt like a stranger with only a set of shared difficulties. We carried my things inside his aunt and uncle’s house, and took them directly into the guest room right next to the front door. The main living quarters were upstairs, but rather than meet them, I told Salil I’d shower and rest first.
+
+<p>I woke up disoriented, with a heavy sadness weighing on me. “What am I doing here?” I thought over and over again, unable to quite put the pieces together as if I had gone to sleep one person and woken up as a completely different one. Salil entered the room, and I didn’t try to hide my tears from him. He approached the bed holding out a wrapped gift.
+
+<p>“It’s just something small,” he said. “I’m so happy you’re here.”
+
+<p>“What is this?” I asked once it was unwrapped, bewildered, holding what appeared to be a miniature high-heeled shoe, similar to Cinderella’s, except it contained a sort of electric circuit board and the liquid and sparkles of a snow-globe.
+
+<p>“It’s a mobile phone holder, to keep on the table. It reminded me of you. And it lights up when you get a call!”
+
+<p>"I don’t really like high heels, though. They’re a symbol of women’s oppression,” I said, muttering my thanks and shamelessly flopping the gift down on the bed.
+
+<hr>
+
+<p>There was a brand new building just being completed in a neighborhood called <span class="ind">BTM Layout</span>, Stage 1. The auto driver didn’t take us to the correct place, so we argued with him, got out and walked past a green park nestled among houses. “Charming,” I thought. As we continued, we noticed goats grazing on a trash heap. “Odd, but not unusual for India.” We turned the corner onto 9th A Main Road and approached a big building called <span class="ind">Vinayak Sai Residency</span>, about six floors high. The apartment did not meet my bathtub criteria, but it was huge, with two bedrooms and bathrooms, affordable at 10,000 rupees per month and immaculately un-used. We went back for a second viewing the following day and decided to take it. We had to pay ten months’ rent for the deposit, typical for the Bangalore market, to the mustachioed Marwari landlord and building owner with his bulging abdomen. It was a good thing Salil had those savings. When we told Fufasa, he got angry that we didn’t involve him in our decision, but we didn’t mind because soon enough we’d be gone.
+
+<p>After we moved in, we realized what a mistake we'd made. Each dawn brought an assault of calls to prayer from at least three different mosques, by my count, in our neighborhood, and piercing rooster crows. To my great surprise, not all Muslims had left for Pakistan during Partition. Our bedroom’s two sets of windows opened onto the hallway and stairway, respectively; shouting school kids accompanied by their parents began their descent around seven. The elevator had a steel gate to close manually, which someone inevitably left open, prompting an endless loop of an enigmatic recording in Kannada, the local language: <span class="ind">“Gain mardi gate kuchi.”</span>
+
+<p>During my waking hours, I was constantly on guard. On my morning walk down narrow lanes, I passed goats hanging outside the butcher, the same ones I imagined I saw eating from the trash heaps days before. Often there were trucks parked nearby, taking up the majority of the street’s width. I scurried along, past the women in burkhas and their children in tow, past the street vendors gawking at me with dropped jaws. I was concerned they would all detect I was Jewish, and attack me one day. Salil reassured me that in India, Muslims dislike Hindus more than Jews.
+
+<p>I could not find reliable transportation; the auto-rickshaw who agreed to pick me up every morning stopped coming, and it was rare to find one who would take me to work. It was a tense ten-minute walk to the busy Bannerghatta Main Road, boasting the offices of Accenture, IBM, and other multi-national corporations just further down. 
+
+<p>Bangalore had been emerging as India’s Silicon Valley since about the early nineties, and there were signs of the economic boom of IT outsourcing everywhere. The majority of buildings were caught in some state of renovation or demolition, and there was construction everywhere you looked. Shiny new buildings emerged out of the still-used bamboo scaffolding structures being used, even over ten stories high. Women in saris from rural areas in <span class="ind">Karnataka</span> and beyond carried buckets of sand on their heads as their babies hung from hammocks. Migrant workers came from all over India to find their place in the burgeoning economy. The non-stop growth was mirrored by stand-still traffic in which auto-drivers read newspapers to pass the time.
+
+<p>The return journey was much more roundabout, because of the traffic flows, and drivers often did not want to take me. If they did, they did not want to come all the way down the street and drop me directly at my house. 
+Sometimes they would accusingly exclaim, “This is not BTM Layout, this is <span class="ind">Gurappana Palya</span>!”
+
+<p>And that is when it began to dawn on me, not in a flash but in a connecting the dots kind of way, confirming my suspicions that we lived on the cusp of a Muslim slum area. It was not like the kind you see in Mumbai, in movies like “Slum Dog Millionaire,” because many streets had decent looking homes and apartment buildings.  There was a large parking lot full of auto-rickshaws across from our building, with engines revving at all hours. We surmised that the drivers lived in the small concrete houses adjacent to our building. I would watch my neighbors from the window, the women hanging laundry and chatting on the roof or washing the stoop; an endless stream of activity to observe. </p> <br><hr>
+    </div>
+    <div id="countdown"> 
+        <img src="assets/countdown.gif"> <br>
+      </div>
+    </section>
+    <footer>2015.<br> Authored by Becky Band Jain. Developed by Josephine Rahadi. Designed by the both of us.</footer>
+  </div>
+  <!-- <footer id="debug"></footer> -->
+</article>
+
+<script>
+L.mapbox.accessToken = 'pk.eyJ1Ijoiam9zZWZ1aW4iLCJhIjoib2FUcjdpZyJ9.i9zyAyg_cdgxDryDU3FpnA';
+// In this case, we just hardcode data into the file. This could be dynamic.
+// The important part about this data is that the 'id' property matches
+// the HTML above - that's how we figure out how to link up the
+// map and the data.
+var places = { type: 'FeatureCollection', features: [
+{ geometry: { type: "Point",coordinates: [0,0]},
+  properties: { id: "cover",zoom: 2 }, type: 'Feature' },
+{ geometry: { type: "Point", coordinates: [4.893035888671875,44.9336963896947]},
+  properties: { id: "valence",title:'Hello World!' }, type: 'Feature' },
+{ geometry: { type: "Point", coordinates: [-74.0313720703125,40.62489761395493] },
+  properties: { id: "brooklyn" }, type: 'Feature' },
+{ geometry: { type: "Point", coordinates: [75.8056640625,26.941659545381516] },
+  properties: { id: "jaipur" }, type: 'Feature' },
+{ geometry: { type: "Point", coordinates: [0.14556884765625,51.59242899291177] },
+  properties: { id: "london" }, type: 'Feature' },
+{ geometry: { type: "Point", coordinates: [77.607421875,13.004557745339781] },
+  properties: { id: "bangalore" }, type: 'Feature' }
+]}; 
+
+
+var map = L.mapbox.map('map', 'mapbox.streets', {
+    zoomControl: true,
+});
+// var draggable = L.Draggable('stamenLayer');
+// draggable.enable();
+
+var stamenLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png', {
+  attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>.'
+}).addTo(map);
+
+ var placesLayer = L.mapbox.featureLayer(places)
+    .addTo(map);
+
+// map.setView([40, 20], 3);
+// Disable drag and zoom handlers.
+// Making this effect work with zooming and panning
+// would require a different technique with different tradeoffs.
+// map.dragging.disable();
+map.touchZoom.disable();
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
+
+
+var narrative = document.getElementById('narrative'),
+    sections = narrative.getElementsByTagName('section'),
+    currentId = '';
+
+setId('cover');
+  
+
+function setId(newId) {
+    // If the ID hasn't actually changed, don't do anything
+    if (newId === currentId) return;
+    // Otherwise, iterate through layers, setting the current
+    // marker to a different color and zooming to it.
+    placesLayer.eachLayer(function(layer) {
+        if (layer.feature.properties.id === newId) {
+            map.setView(layer.getLatLng(), layer.feature.properties.zoom || 14);
+            layer.setIcon(L.mapbox.marker.icon({
+                'marker-color': '#200070',
+            }));
+        } else {
+            layer.setIcon(L.mapbox.marker.icon({
+                'marker-color': '#200070'
+            }));
+        }
+    });
+    // highlight the current section
+    for (var i = 0; i < sections.length; i++) {
+        sections[i].className = sections[i].id === newId ? 'active' : '';
+    }
+    // And then set the new id as the current one,
+    // so that we know to do nothing at the beginning
+    // of this function if it hasn't changed between calls
+    currentId = newId;
+}
+
+// If you were to do this for real, you would want to use
+// something like underscore's _.debounce function to prevent this
+// call from firing constantly.
+narrative.onscroll = function(e) {
+    var narrativeHeight = narrative.offsetHeight;
+    var newId = currentId;
+    // Find the section that's currently scrolled-to.
+    // We iterate backwards here so that we find the topmost one.
+    for (var i = sections.length - 1; i >= 0; i--) {
+        var rect = sections[i].getBoundingClientRect();
+        if (rect.top >= 0 && rect.top <= narrativeHeight) {
+            newId = sections[i].id;
+        }
+    };
+    setId(newId);
+};
+
+
+
+</script>
+</body>
+</html>
